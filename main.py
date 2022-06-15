@@ -202,6 +202,7 @@ class Admin(User):
 def admin_loop(admin):
     a_ch = ""
     while a_ch != 'quit':
+        print()
         a_ch = str(
             input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
         if a_ch == "add":
@@ -213,7 +214,19 @@ def admin_loop(admin):
                     admin.add_students(student_name, class_num, student_id)
                     break
                 except ValueError:
-                    print("Invlalid try again!")
+                    print("ValueError try again!")
+        elif a_ch == "addt":
+            while True:
+                try:
+                    teacher_id = int(input("Teacher ID:"))
+                    teacher_name = input("Teacher Name:")
+                    class_name = input("Class no:")
+                    admin.add_teachers(teacher_id, teacher_name, class_name)
+                    break
+                except ValueError:
+                    print("ValueError try again!")
+                except TypeError:
+                    print("TypeError try again!")
         elif a_ch == "print":
             admin.print()
         elif a_ch == "quit":
@@ -225,6 +238,7 @@ def admin_loop(admin):
 def user_loop(user):
     a_ch = ""
     while a_ch != 'quit':
+        print()
         a_ch = str(
             input(
                 "search: Search for Student attendance  take: Take attendance for class  print: Print out class and student information"))
@@ -258,6 +272,7 @@ user.update_attendance()  # temp for debugging
 ch = ""
 while (ch != "quit"):
     try:
+        print()
         ch = input("Are you admin or user?")
     except TypeError:
         print("Invlalid try again!")
