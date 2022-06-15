@@ -140,8 +140,8 @@ class User:
 
 class Admin(User):
     def __init__(self):
-        sect_list = [[1, "A"], [1, "B"], [1, "C"], [2, "A"], [3, "A"], [3, "B"]]
-        list(filter(lambda sect_info: self.add_sect(sect_info[0], sect_info[1]), sect_list))
+        sect_list = ["1A", "1B", "1C", "2A", "3A", "3B"]
+        list(filter(lambda sect_info: self.add_sect(sect_info), sect_list))
 
         teacher_list = [[1, "Mr. Macdonald", "1A"], [2, "Ms. Rolex", "1B"], [3, "Mr. Airbus", "1C"],
                         [4, "Ms. Amadeus", "2A"], [5, "Mr. Bose", "3A"],
@@ -181,9 +181,14 @@ class Admin(User):
         selected_sect.teacher = id
         selected_sect.teacher_name = name
 
-    def add_sect(self, class_no, sect_name):
-        s = Section(str(class_no) + sect_name)
-        super().classes[class_no].append(s)
+    def add_sect(self, class_name):
+        s = Section(class_name)
+        selected_class = super().classes[int(class_name[0])]
+        for c in selected_class:
+            if c.class_name == class_name:
+                print("Class name already exists")
+                return
+        super().classes[int(class_name[0])].append(s)
 
     def assign_teacher(self, class_no, sect_name, teacher_id):
         super().classes[class_no][sect_name].add_teacher(teacher_id, self.teachers[teacher_id])  # add teacher name
@@ -215,6 +220,8 @@ def admin_loop(admin):
                     break
                 except ValueError:
                     print("ValueError try again!")
+                except KeyError:
+                    print("Class does not exist, try again")
         elif a_ch == "addt":
             while True:
                 try:
@@ -227,6 +234,22 @@ def admin_loop(admin):
                     print("ValueError try again!")
                 except TypeError:
                     print("TypeError try again!")
+                except KeyError:
+                    print("Class does not exist, try again")
+        elif a_ch == "adds":
+            while True:
+                try:
+                    class_name = input("Section to be added e.g. 1A:")
+                    admin.add_sect(class_name)
+                    break
+                except ValueError:
+                    print("ValueError try again!")
+                except TypeError:
+                    print("TypeError try again!")
+                except IndexError:
+                    print("IndexError try again!")
+        elif a_ch == "addc":
+            admin.add_class()
         elif a_ch == "print":
             admin.print()
         elif a_ch == "quit":
