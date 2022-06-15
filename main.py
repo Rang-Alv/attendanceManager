@@ -10,6 +10,13 @@ class Student:
 
     def display_details(self):
         print("Student name:", self.name, " Student ID:", self.id, " Student class:", self.class_name)
+        print(self.record)
+
+    def get_attendance(self):
+        att_week = (self.record[0]) / 5 * 100
+        att_month = (sum(self.record[0:4]) / (5 * 4)) * 100
+        att_year = (sum(self.record)) / (5 * 8) * 100
+        return att_week, att_month, att_year
 
 
 class Section:
@@ -30,8 +37,14 @@ class Section:
         for id in self.students:  # Potensh replace with lambda
             input_atten = []
             for i in range(0, 8):
-                print("Attendance for student:", id, ", week:", i)
-                input_atten.append(int(input()))
+                while True:
+                    print("Attendance for student:", id, " in week:", i)
+                    week_atten = int(input())
+                    if week_atten < 0 or week_atten > 5:
+                        print("Attendance for the week can not be less than 0 or greater than 5")
+                    else:
+                        input_atten.append(week_atten)
+
             self.students[id] = input_atten  # Set attendance
 
     def get_no_students(self):
@@ -65,10 +78,14 @@ class User:
             for i in self.classes[l]:
                 i.display_details()
 
+    def print(self):
+        self.print_classes()
+        self.print_students()
+
     # Method of writing student attendance
     def take_attendance(self):
         while True:
-            input_class = input("Enter section to take attendance:")
+            input_class = input("Enter section to take attendance:") #FIX
             try:
                 print(input_class[0], input_class[1])
                 selected_class = self.classes[int(input_class[0])]
@@ -83,6 +100,7 @@ class User:
                 print("Invlalid try again!")
 
         selected_sect.set_attendance()
+        self.update_attendance()
 
     def update_attendance(self):
         for sid in self.students:
@@ -92,14 +110,25 @@ class User:
                 selected_class = self.classes[int(search_class[0])]
                 #selected_sect = selected_class[0]
                 for c in selected_class:
-                    if c.class_name == search_class: #PROBLEM
+                    if c.class_name == search_class:
                         selected_sect = c
                         break
                 # Get attendance record, calculate attendance percentages and update in student object
                 print(selected_sect.class_name)
-
+                # Get the attendance record from the section object and set the attendance record in the student object
+                student_current.record = selected_sect.students[sid]
             except(RuntimeError, TypeError, NameError, IndexError):
                 print("wrong")
+
+
+    def display_attendance(self, student_id):
+        try:
+            att_week, att_month, att_year = self.students[student_id].get_attendance()
+            print("Weekly:", att_week, "Monthly:", att_month, "Annual:", att_year)
+        except KeyError:
+            print("ERROR: That student does not exist")
+
+
 
 
 class Admin(User):
@@ -120,6 +149,7 @@ class Admin(User):
         stud_list = [["Toaster", 1, 6], ["Biscuit", 1, 7], ["Book", 1, 8], ["Radiator", 1, 9], ["Webcam", 1, 10],
                      ["Clock", 1, 11], ["Toilet", 2, 12]]
         list(filter(lambda stud_info: self.add_students(stud_info[0], stud_info[1], stud_info[2]), stud_list))
+        super().update_attendance()
 
     def add_students(self, name, class_no, id):
         if id in self.students:
@@ -174,6 +204,27 @@ def admin_loop(admin):
         if a_ch == "print":
             admin.print()
 
+def user_loop(user):
+    a_ch = ""
+    while a_ch != 'quit':
+        a_ch = str(
+            input("search: Search for Student attendance  take: Take attendance for class  print: Print out class and student information"))
+        if a_ch == "search":
+            while True:
+                try:
+                    sid_search = int(input("Enter Student ID to search for:"))
+                    user.display_attendance(sid_search)
+                    break
+                except TypeError:
+                    print("Please enter a valid number")
+                except IndexError:
+                    print("Student with that ID does not exist, please enter a valid Student ID")
+        elif a_ch == "take":
+            user.take_attendance()
+        elif a_ch == "print":
+            user.print()
+        else:
+            print("Unknown selection")
 
 admin = Admin()
 user = User()
@@ -191,9 +242,6 @@ while (ch != "quit"):
     if ch == "admin":
         admin_loop(admin)
     elif ch == "user":
-        print("User")
+        user_loop(user)
 
-admin.print()
-user.take_attendance()
-admin.print()
 # user.print()
