@@ -104,6 +104,9 @@ class Admin(User):
         list(filter(lambda stud_info: self.add_students(stud_info[0], stud_info[1], stud_info[2]), stud_list))
 
     def add_students(self, name, class_no, id):
+        for sid in self.students:
+            if sid == id:
+                break
         for c in self.classes[class_no]:
             if c.get_no_students() < 5:  # Find class with space
                 s = Student(name, c.get_class_name(), id)
@@ -128,11 +131,27 @@ class Admin(User):
         self.classes[self.no_classes] = []
 
     def print(self):
-        print("Hello Admin yes")
+        print("You are in admin access mode")
         super().print_students()
         super().print_classes()
         print(super().teachers)
 
+def admin_loop(admin):
+    a_ch = ""
+    while a_ch != 'quit':
+        a_ch = str(input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
+        if a_ch == "add":
+            while True:
+                student_name = input("Student Name:")
+                class_num = int(input("Class no:"))
+                student_id = int(input("Class no:"))
+                try:
+                    admin.add_students(student_name, class_num, student_id)
+                    break
+                except TypeError:
+                    print("Invlalid try again!")
+        if a_ch == "print":
+            admin.print()
 
 admin = Admin()
 user = User()
@@ -140,6 +159,17 @@ user = User()
 # create lambdas to add classes and sections
 # admin.add_students("Toaster", 1, 6)
 # Create lambda to add students
+ch = ""
+while(ch != "quit"):
+    try:
+       ch = input("Are you admin or user?")
+    except TypeError:
+        print("Invlalid try again!")
+    if ch == "admin":
+        admin_loop(admin)
+    elif ch == "user":
+        print("User")
+
 admin.print()
 user.take_attendance()
 admin.print()
