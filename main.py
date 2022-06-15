@@ -64,8 +64,8 @@ class Section:
 class User:
     students = {}
     teachers = {}
-    classes = {1: [], 2: [], 3: [], 4: []}
-    no_classes = 4
+    classes = {1: [], 2: [], 3: []}
+    no_classes = 3
 
     def get_student_name(self, id):
         return self.students[id]
@@ -196,6 +196,9 @@ class Admin(User):
     def add_class(self):
         self.no_classes = self.no_classes + 1
         self.classes[self.no_classes] = []
+        section_name = str(self.no_classes) + "A"
+        self.add_sect(section_name)
+        print(self.classes)
 
     def print(self):
         print("You are in admin access mode")
@@ -208,6 +211,7 @@ def admin_loop(admin):
     a_ch = ""
     while a_ch != 'quit':
         print()
+        print("Type quit to go back")
         a_ch = str(
             input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
         if a_ch == "add":
@@ -262,6 +266,7 @@ def user_loop(user):
     a_ch = ""
     while a_ch != 'quit':
         print()
+        print("Type quit to go back")
         a_ch = str(
             input(
                 "search: Search for Student attendance  take: Take attendance for class  print: Print out class and student information"))
@@ -296,6 +301,7 @@ ch = ""
 while (ch != "quit"):
     try:
         print()
+        print("Type quit to shut down")
         ch = input("Are you admin or user?")
     except TypeError:
         print("Invlalid try again!")
