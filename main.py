@@ -30,7 +30,6 @@ class Section:
         for id in self.students:  # Potensh replace with lambda
             input_atten = []
             for i in range(0, 8):
-
                 print("Attendance for student:", id, ", week:", i)
                 input_atten.append(int(input()))
             self.students[id] = input_atten  # Set attendance
@@ -85,6 +84,23 @@ class User:
 
         selected_sect.set_attendance()
 
+    def update_attendance(self):
+        for sid in self.students:
+            try:
+                student_current = self.students[sid]
+                search_class = student_current.class_name
+                selected_class = self.classes[int(search_class[0])]
+                #selected_sect = selected_class[0]
+                for c in selected_class:
+                    if c.class_name == search_class: #PROBLEM
+                        selected_sect = c
+                        break
+                # Get attendance record, calculate attendance percentages and update in student object
+                print(selected_sect.class_name)
+
+            except(RuntimeError, TypeError, NameError, IndexError):
+                print("wrong")
+
 
 class Admin(User):
     def __init__(self):
@@ -101,7 +117,8 @@ class Admin(User):
                 n.add_teacher(teacher_number)
                 teacher_number = teacher_number + 1
 
-        stud_list = [["Toaster", 1, 6], ["Biscuit", 1, 7], ["Book", 1, 8], ["Radiator", 1, 9], ["Webcam", 1, 10], ["Clock", 1, 11], ["Toilet", 2, 12]]
+        stud_list = [["Toaster", 1, 6], ["Biscuit", 1, 7], ["Book", 1, 8], ["Radiator", 1, 9], ["Webcam", 1, 10],
+                     ["Clock", 1, 11], ["Toilet", 2, 12]]
         list(filter(lambda stud_info: self.add_students(stud_info[0], stud_info[1], stud_info[2]), stud_list))
 
     def add_students(self, name, class_no, id):
@@ -116,7 +133,7 @@ class Admin(User):
                 c.add_student(id)
                 break
             else:
-                print("No space") # CHANGE make new section in class
+                print("No space")  # CHANGE make new section in class
 
     def add_teachers(self, id, name):
         super().teachers[id] = name
@@ -138,10 +155,12 @@ class Admin(User):
         super().print_classes()
         print(super().teachers)
 
+
 def admin_loop(admin):
     a_ch = ""
     while a_ch != 'quit':
-        a_ch = str(input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
+        a_ch = str(
+            input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
         if a_ch == "add":
             while True:
                 try:
@@ -155,16 +174,18 @@ def admin_loop(admin):
         if a_ch == "print":
             admin.print()
 
+
 admin = Admin()
 user = User()
+user.update_attendance() #temp for debugging
 # admin.add_sect(1, "A", 5)
 # create lambdas to add classes and sections
 # admin.add_students("Toaster", 1, 6)
 # Create lambda to add students
 ch = ""
-while(ch != "quit"):
+while (ch != "quit"):
     try:
-       ch = input("Are you admin or user?")
+        ch = input("Are you admin or user?")
     except TypeError:
         print("Invlalid try again!")
     if ch == "admin":
@@ -175,6 +196,4 @@ while(ch != "quit"):
 admin.print()
 user.take_attendance()
 admin.print()
-#user.print()
-
-
+# user.print()
