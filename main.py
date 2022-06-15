@@ -88,12 +88,16 @@ class Admin(User):
                 n.add_teacher(teacher_number)
                 teacher_number = teacher_number + 1
 
+        stud_list = [["Toaster", 1, 6], ["Biscuit", 1, 7], ["Book", 1, 8], ["Radiator", 1, 9], ["Webcam", 1, 10], ["Clock", 1, 11], ["Toilet", 2, 12]]
+        list(filter(lambda stud_info: self.add_students(stud_info[0], stud_info[1], stud_info[2]), stud_list))
+
     def add_students(self, name, class_no, id):
         for c in self.classes[class_no]:
             if c.get_no_students() < 5:  # Find class with space
                 s = Student(name, c.get_class_name(), id)
                 super().students[id] = s
                 c.add_student(id)
+                break
             else:
                 print("No space") # CHANGE make new section in class
 
@@ -112,7 +116,7 @@ class Admin(User):
         self.classes[self.no_classes] = []
 
     def print(self):
-        print("Hello Admin")
+        print("Hello Admin yes")
         super().print_students()
         super().print_classes()
         print(super().teachers)
