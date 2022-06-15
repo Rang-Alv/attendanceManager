@@ -30,6 +30,7 @@ class Section:
         for id in self.students:  # Potensh replace with lambda
             input_atten = []
             for i in range(0, 8):
+
                 print("Attendance for student:", id, ", week:", i)
                 input_atten.append(int(input()))
             self.students[id] = input_atten  # Set attendance
@@ -104,9 +105,10 @@ class Admin(User):
         list(filter(lambda stud_info: self.add_students(stud_info[0], stud_info[1], stud_info[2]), stud_list))
 
     def add_students(self, name, class_no, id):
-        for sid in self.students:
-            if sid == id:
-                break
+        if id in self.students:
+            print("Student already exists")
+            return
+
         for c in self.classes[class_no]:
             if c.get_no_students() < 5:  # Find class with space
                 s = Student(name, c.get_class_name(), id)
@@ -142,13 +144,13 @@ def admin_loop(admin):
         a_ch = str(input("add: Add Students  addt: Add Teachers  adds: Add Sect  addc: Add Class  print: Display details"))
         if a_ch == "add":
             while True:
-                student_name = input("Student Name:")
-                class_num = int(input("Class no:"))
-                student_id = int(input("Class no:"))
                 try:
+                    student_name = input("Student Name:")
+                    class_num = int(input("Class no:"))
+                    student_id = int(input("Student ID:"))
                     admin.add_students(student_name, class_num, student_id)
                     break
-                except TypeError:
+                except ValueError:
                     print("Invlalid try again!")
         if a_ch == "print":
             admin.print()
@@ -173,6 +175,6 @@ while(ch != "quit"):
 admin.print()
 user.take_attendance()
 admin.print()
-user.print()
+#user.print()
 
 
