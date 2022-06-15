@@ -21,13 +21,18 @@ class Section:
     def add_teacher(self, teacher_id):
         self.teacher = teacher_id
 
-    def add_student(self, student_id, attendance=100):
+    def add_student(self, student_id, attendance=None):
+        if attendance is None:
+            attendance = [0, 0, 0, 0, 0, 0, 0, 0]
         self.students[student_id] = attendance  # Add the student with an empty attendance record
 
     def set_attendance(self):
         for id in self.students:  # Potensh replace with lambda
-            input_atten = int(input("Attendance for student", id))
-            self.students[id] = input_atten  # Get attendance
+            input_atten = []
+            for i in range(0, 8):
+                print("Attendance for student:", id, ", week:", i)
+                input_atten.append(int(input()))
+            self.students[id] = input_atten  # Set attendance
 
     def get_no_students(self):
         return len(self.students)
@@ -61,16 +66,23 @@ class User:
                 i.display_details()
 
     # Method of writing student attendance
-    def write_attendance(self):
+    def take_attendance(self):
         while True:
-            input_class = input("Enter class to take attendance:")
+            input_class = input("Enter section to take attendance:")
             try:
-                selected_class = self.classes[input_class[0]]
+                print(input_class[0], input_class[1])
+                selected_class = self.classes[int(input_class[0])]
+                selected_sect = selected_class[0]
+                for c in selected_class:
+                    if c.class_name == input_class:
+                        selected_sect = c
+
+                print(selected_sect.class_name)
                 break
             except IndexError:
                 print("Invlalid try again!")
 
-        selected_class.set_attendance()
+        selected_sect.set_attendance()
 
 
 class Admin(User):
@@ -123,8 +135,14 @@ class Admin(User):
 
 
 admin = Admin()
+user = User()
 # admin.add_sect(1, "A", 5)
 # create lambdas to add classes and sections
 # admin.add_students("Toaster", 1, 6)
 # Create lambda to add students
 admin.print()
+user.take_attendance()
+admin.print()
+user.print()
+
+
